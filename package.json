@@ -1,0 +1,21 @@
+{
+  "name": "dsa-sync",
+  "version": "1.0.0",
+  "description": "Chrome extension to automatically synchronize accepted coding problem submissions from GeeksforGeeks and other platforms to GitHub.",
+  "main": "src/background/service-worker.js",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  },
+  "keywords": [
+    "chrome-extension",
+    "geeksforgeeks",
+    "github-sync",
+    "dsa",
+    "leetcode",
+    "codechef",
+    "codeforces"
+  ],
+  "author": "DSA Sync Contributors",
+  "license": "MIT"
+}

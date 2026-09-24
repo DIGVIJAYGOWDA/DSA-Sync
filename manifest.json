@@ -1,0 +1,99 @@
+{
+  "manifest_version": 3,
+  "name": "DSA Sync - Universal Multi-Platform Engine",
+  "version": "2.0.0",
+  "description": "Automatically synchronizes accepted coding problem solutions from GeeksforGeeks, LeetCode, CodeChef, and Codeforces to GitHub.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "src/background/service-worker.js",
+    "type": "module"
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "notifications"
+  ],
+  "host_permissions": [
+    "https://api.github.com/*",
+    "https://*.geeksforgeeks.org/*",
+    "https://leetcode.com/*",
+    "https://*.codechef.com/*",
+    "https://codeforces.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.geeksforgeeks.org/problems/*",
+        "https://practice.geeksforgeeks.org/problems/*"
+      ],
+      "js": [
+        "src/content/adapters/base-adapter.js",
+        "src/content/adapters/gfg-adapter.js",
+        "src/content/gfg.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "https://leetcode.com/problems/*"
+      ],
+      "js": [
+        "src/content/adapters/base-adapter.js",
+        "src/content/adapters/leetcode-adapter.js",
+        "src/content/gfg.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "https://www.codechef.com/problems/*",
+        "https://www.codechef.com/practice/*"
+      ],
+      "js": [
+        "src/content/adapters/base-adapter.js",
+        "src/content/adapters/codechef-adapter.js",
+        "src/content/gfg.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "https://codeforces.com/problemset/problem/*",
+        "https://codeforces.com/contest/*/problem/*"
+      ],
+      "js": [
+        "src/content/adapters/base-adapter.js",
+        "src/content/adapters/codeforces-adapter.js",
+        "src/content/gfg.js"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/content/inject/gfg-page-script.js",
+        "icons/*"
+      ],
+      "matches": [
+        "https://*.geeksforgeeks.org/*",
+        "https://leetcode.com/*",
+        "https://*.codechef.com/*",
+        "https://codeforces.com/*"
+      ]
+    }
+  ]
+}

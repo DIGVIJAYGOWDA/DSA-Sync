@@ -1,0 +1,24 @@
+# Dependencies & build
+node_modules/
+dist/
+build/
+
+# Environment and credentials
+.env
+.env.local
+*.pem
+*.key
+credentials.json
+secrets.json
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
