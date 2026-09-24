@@ -15,7 +15,7 @@ export function getFileExtension(language = '') {
   if (lang.includes('c++') || lang.includes('cpp') || lang.includes('g++') || lang.includes('gnu c++')) {
     return '.cpp';
   }
-  if (lang.includes('python') || lang === 'py' || lang === 'python3' || lang.includes('pyypy')) {
+  if (lang.includes('python') || lang === 'py' || lang === 'python3' || lang.includes('pypy')) {
     return '.py';
   }
   if (lang.includes('java') && !lang.includes('javascript')) {
@@ -98,6 +98,7 @@ export function formatPlatformName(platform = '') {
   if (p === 'leetcode' || p === 'lc') return 'LeetCode';
   if (p === 'codechef' || p === 'cc') return 'CodeChef';
   if (p === 'codeforces' || p === 'cf') return 'Codeforces';
+  if (p === 'hackerrank' || p === 'hr') return 'HackerRank';
   return platform ? platform.charAt(0).toUpperCase() + platform.slice(1) : 'Unknown';
 }
 
@@ -112,6 +113,7 @@ export function sanitizeFileName(str = '') {
   return str
     .trim()
     .replace(/[\\/:*?"<>|#%]/g, '')
+    .replace(/\.+/g, '')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '');
@@ -170,7 +172,8 @@ export function estimateComplexity(code = '') {
 export function generateFilePath(submission, rootFolder = 'DSA-Solutions') {
   const platform = formatPlatformName(submission.platform);
   const category = formatCategoryPath(submission.tags);
-  const problemFolder = sanitizeFileName(submission.title);
+  const title = submission.problemTitle || submission.title || 'Untitled';
+  const problemFolder = sanitizeFileName(title);
   const ext = getFileExtension(submission.language);
   
   const root = sanitizeFileName(rootFolder) || 'DSA-Solutions';
@@ -184,7 +187,8 @@ export function generateFilePath(submission, rootFolder = 'DSA-Solutions') {
 export function generateReadmePath(submission, rootFolder = 'DSA-Solutions') {
   const platform = formatPlatformName(submission.platform);
   const category = formatCategoryPath(submission.tags);
-  const problemFolder = sanitizeFileName(submission.title);
+  const title = submission.problemTitle || submission.title || 'Untitled';
+  const problemFolder = sanitizeFileName(title);
   
   const root = sanitizeFileName(rootFolder) || 'DSA-Solutions';
   return `${root}/${platform}/${category}/${problemFolder}/README.md`;
@@ -192,19 +196,21 @@ export function generateReadmePath(submission, rootFolder = 'DSA-Solutions') {
 
 /**
  * Generates rich v2.0 README.md content for a problem solution
- * @param {Object} submission - Common Submission Model
+ * @param {Object} submission - Normalized Submission Model
  * @returns {string} Markdown content
  */
 export function generateReadmeContent(submission) {
-  const title = submission.title || 'Untitled Problem';
+  const title = submission.problemTitle || submission.title || 'Untitled Problem';
   const platform = formatPlatformName(submission.platform);
   const url = submission.problemUrl || '#';
   const difficulty = submission.difficulty || 'Unspecified';
   const language = normalizeLanguageName(submission.language);
-  const status = (submission.status || 'Accepted').toUpperCase();
-  const date = submission.submittedAt ? new Date(submission.submittedAt).toUTCString() : new Date().toUTCString();
+  const status = (submission.submissionStatus || submission.status || 'Accepted').toUpperCase();
+  const date = submission.timestamp ? new Date(submission.timestamp).toUTCString() : new Date().toUTCString();
   
-  const complexity = estimateComplexity(submission.code || '');
+  const complexity = submission.metadata?.complexityTime
+    ? { time: submission.metadata.complexityTime, space: submission.metadata.complexitySpace || 'O(1)' }
+    : estimateComplexity(submission.code || '');
 
   let tagsFormatted = 'N/A';
   if (Array.isArray(submission.tags) && submission.tags.length > 0) {
