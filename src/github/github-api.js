@@ -1,9 +1,9 @@
 /**
- * GitHub REST API Integration Module for DSA Sync
- * Operates on Common Submission Model objects to commit code solutions and READMEs to GitHub.
+ * GitHub REST API Service Module for DSA Sync
+ * Accepts Normalized Submission objects and commits code & README files without platform-specific logic.
  */
 
-import { validateSubmission, validateRepoPath } from '../utils/validators.js';
+import { validateRepoPath } from '../utils/validators.js';
 import { generateFilePath, generateReadmePath, generateReadmeContent, formatPlatformName } from '../utils/formatter.js';
 import { storage } from '../storage/storage.js';
 import logger from '../utils/logger.js';
@@ -18,7 +18,6 @@ export class GitHubApi {
     if (typeof Buffer !== 'undefined') {
       return Buffer.from(str, 'utf-8').toString('base64');
     }
-    // Browser environment UTF-8 safe base64
     return btoa(unescape(encodeURIComponent(str)));
   }
 
@@ -82,16 +81,6 @@ export class GitHubApi {
 
   /**
    * Creates or updates a file in GitHub repository
-   * @param {Object} params
-   * @param {string} params.token
-   * @param {string} params.owner
-   * @param {string} params.repo
-   * @param {string} params.path
-   * @param {string} params.content
-   * @param {string} params.message
-   * @param {string} [params.branch='main']
-   * @param {string} [params.existingSha]
-   * @returns {Promise<{ success: boolean, commitSha?: string, commitUrl?: string, error?: string }>}
    */
   async createOrUpdateFile({ token, owner, repo, path, content, message, branch = 'main', existingSha }) {
     try {
@@ -139,18 +128,19 @@ export class GitHubApi {
   }
 
   /**
-   * Core Sync Method: Accepts Common Submission Model and commits solution & README
-   * @param {Object} submission Common Submission Model
+   * Core Sync Method: Accepts Normalized Submission Model and commits solution & README
+   * Purely generic algorithm operating strictly on normalized submission fields.
+   * @param {Object} submission Normalized Submission Model
    * @param {Object} [overrideSettings]
    * @returns {Promise<{ success: boolean, status: string, message: string, details?: Object }>}
    */
   async syncSubmission(submission, overrideSettings = null) {
-    logger.info(`Starting synchronization for submission: "${submission?.title}"`);
+    const title = submission.problemTitle || submission.title || 'Untitled';
+    logger.info(`Starting synchronization for normalized submission: "${title}" (${submission.platform})`);
 
-    // 1. Validate submission format
-    const submissionValid = validateSubmission(submission);
-    if (!submissionValid.valid) {
-      const errMsg = `Invalid submission data: ${submissionValid.errors.join(', ')}`;
+    // 1. Basic validation
+    if (!submission || !submission.code) {
+      const errMsg = 'Missing normalized submission code or payload.';
       logger.error(errMsg);
       return { success: false, status: 'error', message: errMsg };
     }
@@ -178,7 +168,7 @@ export class GitHubApi {
     if (settings.ignoreDuplicates) {
       const isLocalDuplicate = await storage.isDuplicate(submission);
       if (isLocalDuplicate) {
-        const msg = `Skipped: Solution for "${submission.title}" has already been synchronized recently.`;
+        const msg = `Skipped: Solution for "${title}" has already been synchronized recently.`;
         logger.info(msg);
         await storage.updateStats({
           lastSyncTime: new Date().toISOString(),
@@ -189,7 +179,7 @@ export class GitHubApi {
       }
     }
 
-    // 4. File Paths Generation
+    // 4. File Paths Generation (Generic for all platforms)
     const filePath = generateFilePath(submission, rootFolder);
     const readmePath = generateReadmePath(submission, rootFolder);
 
@@ -197,9 +187,8 @@ export class GitHubApi {
     const existingFile = await this.getFile(settings.githubToken, owner, repo, filePath, branch);
     
     if (existingFile.exists && settings.ignoreDuplicates) {
-      // Compare code content
       if (existingFile.content && existingFile.content.trim() === submission.code.trim()) {
-        const msg = `Skipped: Exact code for "${submission.title}" already exists on GitHub repo.`;
+        const msg = `Skipped: Exact solution code for "${title}" already exists on GitHub repo.`;
         logger.info(msg);
         await storage.recordSyncedSubmission(submission);
         await storage.updateStats({
@@ -214,8 +203,8 @@ export class GitHubApi {
     // 6. Commit Code Solution File
     const platformDisplay = formatPlatformName(submission.platform);
     const commitMsg = existingFile.exists
-      ? `Update solution for ${submission.title} (${platformDisplay})`
-      : `Add solution for ${submission.title} (${platformDisplay})`;
+      ? `Update solution for ${title} (${platformDisplay})`
+      : `Add solution for ${title} (${platformDisplay})`;
 
     const codeResult = await this.createOrUpdateFile({
       token: settings.githubToken,
@@ -237,7 +226,7 @@ export class GitHubApi {
         lastSyncMessage: errMsg
       });
       await storage.addHistoryItem({
-        title: submission.title,
+        title,
         platform: submission.platform,
         status: 'failed',
         message: errMsg
@@ -251,8 +240,8 @@ export class GitHubApi {
       const readmeContent = generateReadmeContent(submission);
       const existingReadme = await this.getFile(settings.githubToken, owner, repo, readmePath, branch);
       const readmeCommitMsg = existingReadme.exists
-        ? `Update README for ${submission.title}`
-        : `Add README for ${submission.title}`;
+        ? `Update README for ${title}`
+        : `Add README for ${title}`;
 
       readmeResult = await this.createOrUpdateFile({
         token: settings.githubToken,
@@ -270,7 +259,7 @@ export class GitHubApi {
     await storage.recordSyncedSubmission(submission);
     const currentStats = await storage.getStats();
     const newTotal = (currentStats.totalSynced || 0) + 1;
-    const successMsg = `Successfully synced "${submission.title}" to ${owner}/${repo}`;
+    const successMsg = `Successfully synced "${title}" (${platformDisplay}) to ${owner}/${repo}`;
     
     await storage.updateStats({
       totalSynced: newTotal,
@@ -280,7 +269,7 @@ export class GitHubApi {
     });
 
     await storage.addHistoryItem({
-      title: submission.title,
+      title,
       platform: submission.platform,
       language: submission.language,
       difficulty: submission.difficulty,
