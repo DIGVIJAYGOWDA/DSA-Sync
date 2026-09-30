@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "DSA Sync - Universal Multi-Platform Engine",
-  "version": "2.0.0",
-  "description": "Automatically synchronizes accepted coding problem solutions from GeeksforGeeks, LeetCode, CodeChef, and Codeforces to GitHub.",
+  "version": "2.1.0",
+  "description": "Automatically synchronizes accepted coding problem solutions from GeeksforGeeks, LeetCode, CodeChef, Codeforces, HackerRank, and Take You Forward to GitHub.",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
@@ -31,7 +31,9 @@
     "https://*.geeksforgeeks.org/*",
     "https://leetcode.com/*",
     "https://*.codechef.com/*",
-    "https://codeforces.com/*"
+    "https://codeforces.com/*",
+    "https://*.hackerrank.com/*",
+    "https://*.takeuforward.org/*"
   ],
   "content_scripts": [
     {
@@ -40,8 +42,8 @@
         "https://practice.geeksforgeeks.org/problems/*"
       ],
       "js": [
-        "src/content/adapters/base-adapter.js",
-        "src/content/adapters/gfg-adapter.js",
+        "src/platforms/base-adapter.js",
+        "src/platforms/gfg/gfg-adapter.js",
         "src/content/gfg.js"
       ],
       "run_at": "document_end"
@@ -51,8 +53,8 @@
         "https://leetcode.com/problems/*"
       ],
       "js": [
-        "src/content/adapters/base-adapter.js",
-        "src/content/adapters/leetcode-adapter.js",
+        "src/platforms/base-adapter.js",
+        "src/platforms/leetcode/leetcode-adapter.js",
         "src/content/gfg.js"
       ],
       "run_at": "document_end"
@@ -63,8 +65,8 @@
         "https://www.codechef.com/practice/*"
       ],
       "js": [
-        "src/content/adapters/base-adapter.js",
-        "src/content/adapters/codechef-adapter.js",
+        "src/platforms/base-adapter.js",
+        "src/platforms/codechef/codechef-adapter.js",
         "src/content/gfg.js"
       ],
       "run_at": "document_end"
@@ -75,8 +77,31 @@
         "https://codeforces.com/contest/*/problem/*"
       ],
       "js": [
-        "src/content/adapters/base-adapter.js",
-        "src/content/adapters/codeforces-adapter.js",
+        "src/platforms/base-adapter.js",
+        "src/platforms/codeforces/codeforces-adapter.js",
+        "src/content/gfg.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "https://www.hackerrank.com/challenges/*"
+      ],
+      "js": [
+        "src/platforms/base-adapter.js",
+        "src/platforms/hackerrank/hackerrank-adapter.js",
+        "src/content/gfg.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "https://takeuforward.org/*",
+        "https://www.takeuforward.org/*"
+      ],
+      "js": [
+        "src/platforms/base-adapter.js",
+        "src/platforms/tuf/tuf-adapter.js",
         "src/content/gfg.js"
       ],
       "run_at": "document_end"
@@ -92,7 +117,9 @@
         "https://*.geeksforgeeks.org/*",
         "https://leetcode.com/*",
         "https://*.codechef.com/*",
-        "https://codeforces.com/*"
+        "https://codeforces.com/*",
+        "https://*.hackerrank.com/*",
+        "https://*.takeuforward.org/*"
       ]
     }
   ]

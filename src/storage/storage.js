@@ -1,6 +1,6 @@
 /**
  * Storage module for DSA Sync Chrome Extension
- * Handles persistent state, settings, stats, and duplicate tracking using chrome.storage APIs.
+ * Handles persistent state, settings, stats, daily streak activity, and duplicate tracking using chrome.storage APIs.
  */
 
 const DEFAULT_SETTINGS = {
@@ -12,14 +12,25 @@ const DEFAULT_SETTINGS = {
   ignoreDuplicates: true,
   enabledPlatforms: {
     geeksforgeeks: true,
-    leetcode: false,
-    codechef: false,
-    codeforces: false
+    leetcode: true,
+    codechef: true,
+    codeforces: true,
+    hackerrank: true,
+    takeuforward: true
   }
 };
 
 const DEFAULT_STATS = {
   totalSynced: 0,
+  currentStreak: 0,
+  platformStats: {
+    geeksforgeeks: 0,
+    leetcode: 0,
+    codechef: 0,
+    codeforces: 0,
+    hackerrank: 0,
+    takeuforward: 0
+  },
   lastSyncTime: null,
   lastSyncStatus: 'idle', // 'idle' | 'success' | 'failed' | 'skipped'
   lastSyncMessage: 'No solutions synced yet.'
@@ -82,6 +93,39 @@ class StorageManager {
   }
 
   /**
+   * Calculates current consecutive days streak from daily activity map
+   * @param {Object} dailyActivity Map of 'YYYY-MM-DD' => count
+   * @returns {number}
+   */
+  calculateStreak(dailyActivity = {}) {
+    const dates = Object.keys(dailyActivity).sort();
+    if (dates.length === 0) return 0;
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    const yesterdayStr = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+
+    // Check if user solved today or yesterday to maintain streak
+    if (!dailyActivity[todayStr] && !dailyActivity[yesterdayStr]) {
+      return 0;
+    }
+
+    let streak = 0;
+    let checkDate = dailyActivity[todayStr] ? new Date() : new Date(Date.now() - 86400000);
+
+    while (true) {
+      const dateKey = checkDate.toISOString().split('T')[0];
+      if (dailyActivity[dateKey] && dailyActivity[dateKey] > 0) {
+        streak++;
+        checkDate.setDate(checkDate.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+
+    return streak;
+  }
+
+  /**
    * Retrieves current sync stats
    * @returns {Promise<typeof DEFAULT_STATS>}
    */
@@ -91,17 +135,26 @@ class StorageManager {
         resolve({ ...DEFAULT_STATS });
         return;
       }
-      chrome.storage.local.get(['dsa_sync_stats'], (result) => {
+      chrome.storage.local.get(['dsa_sync_stats', 'dsa_sync_daily_activity'], (result) => {
+        const stats = result.dsa_sync_stats || {};
+        const dailyActivity = result.dsa_sync_daily_activity || {};
+        const calculatedStreak = this.calculateStreak(dailyActivity);
+
         resolve({
           ...DEFAULT_STATS,
-          ...(result.dsa_sync_stats || {})
+          ...stats,
+          currentStreak: calculatedStreak,
+          platformStats: {
+            ...DEFAULT_STATS.platformStats,
+            ...(stats.platformStats || {})
+          }
         });
       });
     });
   }
 
   /**
-   * Updates sync statistics
+   * Updates sync statistics and platform counts
    * @param {Object} update 
    */
   async updateStats(update) {
@@ -109,7 +162,11 @@ class StorageManager {
     const updated = {
       ...current,
       ...update,
-      totalSynced: (update.totalSynced !== undefined) ? update.totalSynced : current.totalSynced
+      totalSynced: (update.totalSynced !== undefined) ? update.totalSynced : current.totalSynced,
+      platformStats: {
+        ...current.platformStats,
+        ...(update.platformStats || {})
+      }
     };
 
     return new Promise((resolve) => {
@@ -125,16 +182,16 @@ class StorageManager {
 
   /**
    * Generates unique hash for duplicate detection
+   * Format: `platform:title:language:codeHash`
    * @param {Object} submission 
    * @returns {string}
    */
   generateSubmissionHash(submission) {
     const platform = (submission.platform || '').toLowerCase().trim();
-    const title = (submission.title || '').toLowerCase().trim();
+    const title = (submission.problemTitle || submission.title || '').toLowerCase().trim();
     const lang = (submission.language || '').toLowerCase().trim();
     const code = (submission.code || '').trim();
     
-    // Simple hash calculation
     let codeHash = 0;
     for (let i = 0; i < code.length; i++) {
       codeHash = (codeHash << 5) - codeHash + code.charCodeAt(i);
@@ -163,26 +220,52 @@ class StorageManager {
   }
 
   /**
-   * Records a submission hash into storage
+   * Records a submission hash into storage, updates streak daily activity, and increments platform count
    * @param {Object} submission 
    */
   async recordSyncedSubmission(submission) {
     const hash = this.generateSubmissionHash(submission);
+    const platformKey = (submission.platform || 'geeksforgeeks').toLowerCase().trim();
+    const todayStr = new Date().toISOString().split('T')[0];
+
     return new Promise((resolve) => {
       if (typeof chrome === 'undefined' || !chrome.storage) {
         resolve();
         return;
       }
-      chrome.storage.local.get(['dsa_sync_hashes'], async (result) => {
+      chrome.storage.local.get(['dsa_sync_hashes', 'dsa_sync_daily_activity', 'dsa_sync_stats'], async (result) => {
         const hashes = result.dsa_sync_hashes || [];
+        const dailyActivity = result.dsa_sync_daily_activity || {};
+        const stats = result.dsa_sync_stats || {};
+        const platformStats = { ...DEFAULT_STATS.platformStats, ...(stats.platformStats || {}) };
+
+        // Increment today's activity count
+        dailyActivity[todayStr] = (dailyActivity[todayStr] || 0) + 1;
+
+        // Increment platform specific solved count if not already recorded in hash
         if (!hashes.includes(hash)) {
           hashes.push(hash);
-          // Keep maximum 500 recent submission hashes to avoid bloat
           if (hashes.length > 500) hashes.shift();
-          chrome.storage.local.set({ dsa_sync_hashes: hashes }, () => resolve());
-        } else {
-          resolve();
+          
+          if (platformStats[platformKey] !== undefined) {
+            platformStats[platformKey] += 1;
+          } else {
+            platformStats[platformKey] = 1;
+          }
         }
+
+        const newStreak = this.calculateStreak(dailyActivity);
+
+        chrome.storage.local.set({
+          dsa_sync_hashes: hashes,
+          dsa_sync_daily_activity: dailyActivity,
+          dsa_sync_stats: {
+            ...DEFAULT_STATS,
+            ...stats,
+            currentStreak: newStreak,
+            platformStats
+          }
+        }, () => resolve());
       });
     });
   }
@@ -203,7 +286,6 @@ class StorageManager {
           ...activityItem,
           timestamp: new Date().toISOString()
         });
-        // Limit history to 50 items
         if (history.length > 50) history.pop();
         chrome.storage.local.set({ dsa_sync_history: history }, () => resolve(history));
       });

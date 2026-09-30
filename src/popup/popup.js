@@ -1,5 +1,5 @@
 /**
- * Popup Script for DSA Sync Chrome Extension
+ * Popup Script for DSA Sync Chrome Extension v2.1
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Dashboard Stats
   const statTotalSynced = document.getElementById('stat-total-synced');
+  const statCurrentStreak = document.getElementById('stat-current-streak');
   const lastSyncMessage = document.getElementById('last-sync-message');
   const lastSyncTime = document.getElementById('last-sync-time');
   const historyList = document.getElementById('history-list');
@@ -28,6 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Platform Elements
   const toggleGfg = document.getElementById('toggle-gfg');
+  const toggleLeetcode = document.getElementById('toggle-leetcode');
+  const toggleCodechef = document.getElementById('toggle-codechef');
+  const toggleCodeforces = document.getElementById('toggle-codeforces');
+  const toggleHackerrank = document.getElementById('toggle-hackerrank');
+  const toggleTuf = document.getElementById('toggle-tuf');
 
   // Settings Elements
   const inputRootFolder = document.getElementById('input-root-folder');
@@ -83,10 +89,11 @@ document.addEventListener('DOMContentLoaded', () => {
         statusText.textContent = hasToken ? 'Invalid Token' : 'Disconnected';
       }
 
-      // Update Dashboard Stats
-      statTotalSynced.textContent = stats.totalSynced || 0;
-      lastSyncMessage.textContent = stats.lastSyncMessage || 'No solutions synced yet.';
-      lastSyncTime.textContent = stats.lastSyncTime ? new Date(stats.lastSyncTime).toLocaleString() : '--';
+      // Update Dashboard Stats & Streak
+      if (statTotalSynced) statTotalSynced.textContent = stats.totalSynced || 0;
+      if (statCurrentStreak) statCurrentStreak.textContent = `${stats.currentStreak || 0} 🔥`;
+      if (lastSyncMessage) lastSyncMessage.textContent = stats.lastSyncMessage || 'No solutions synced yet.';
+      if (lastSyncTime) lastSyncTime.textContent = stats.lastSyncTime ? new Date(stats.lastSyncTime).toLocaleString() : '--';
 
       // Update History List
       renderHistory(history);
@@ -103,7 +110,12 @@ document.addEventListener('DOMContentLoaded', () => {
         checkboxIgnoreDuplicates.checked = settings.ignoreDuplicates !== false;
         
         if (settings.enabledPlatforms) {
-          toggleGfg.checked = settings.enabledPlatforms.geeksforgeeks !== false;
+          if (toggleGfg) toggleGfg.checked = settings.enabledPlatforms.geeksforgeeks !== false;
+          if (toggleLeetcode) toggleLeetcode.checked = settings.enabledPlatforms.leetcode !== false;
+          if (toggleCodechef) toggleCodechef.checked = settings.enabledPlatforms.codechef !== false;
+          if (toggleCodeforces) toggleCodeforces.checked = settings.enabledPlatforms.codeforces !== false;
+          if (toggleHackerrank) toggleHackerrank.checked = settings.enabledPlatforms.hackerrank !== false;
+          if (toggleTuf) toggleTuf.checked = settings.enabledPlatforms.takeuforward !== false;
         }
       }
     });
@@ -217,14 +229,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const rootFolder = inputRootFolder.value.trim() || 'DSA-Solutions';
     const generateReadme = checkboxGenerateReadme.checked;
     const ignoreDuplicates = checkboxIgnoreDuplicates.checked;
-    const gfgEnabled = toggleGfg.checked;
 
     const settingsToUpdate = {
       rootFolder,
       generateReadme,
       ignoreDuplicates,
       enabledPlatforms: {
-        geeksforgeeks: gfgEnabled
+        geeksforgeeks: toggleGfg ? toggleGfg.checked : true,
+        leetcode: toggleLeetcode ? toggleLeetcode.checked : true,
+        codechef: toggleCodechef ? toggleCodechef.checked : true,
+        codeforces: toggleCodeforces ? toggleCodeforces.checked : true,
+        hackerrank: toggleHackerrank ? toggleHackerrank.checked : true,
+        takeuforward: toggleTuf ? toggleTuf.checked : true
       }
     };
 
