@@ -192,28 +192,28 @@ body {
 /* Stats Grid */
 .stats-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
   margin-bottom: 14px;
 }
 
 .stat-card {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  padding: 12px;
+  padding: 10px 8px;
   border-radius: 8px;
   text-align: center;
 }
 
 .stat-value {
   display: block;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--primary-hover);
 }
 
 .stat-label {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
 }
 
@@ -392,7 +392,7 @@ input[type="password"]:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   color: #FFF;
 }
@@ -401,6 +401,8 @@ input[type="password"]:focus {
 .leetcode-icon { background: #FFA116; }
 .codechef-icon { background: #5B4638; }
 .codeforces-icon { background: #1F8AC6; }
+.hackerrank-icon { background: #2EC866; }
+.tuf-icon { background: #E11D48; }
 
 .platform-name {
   display: block;

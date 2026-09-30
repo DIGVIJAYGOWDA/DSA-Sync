@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DSA Sync v2.0</title>
+  <title>DSA Sync v2.1</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
@@ -14,7 +14,7 @@
         <img src="../../icons/icon48.png" alt="DSA Sync Logo" class="brand-logo">
         <div class="brand-info">
           <h1 class="brand-name">DSA Sync</h1>
-          <span class="version-tag">v2.0.0</span>
+          <span class="version-tag">v2.1.0</span>
         </div>
       </div>
       <div id="status-pill" class="status-pill status-disconnected">
@@ -39,11 +39,15 @@
       <div class="stats-grid">
         <div class="stat-card">
           <span class="stat-value" id="stat-total-synced">0</span>
-          <span class="stat-label">Total Solutions Synced</span>
+          <span class="stat-label">Total Solved</span>
         </div>
         <div class="stat-card">
-          <span class="stat-value" id="stat-active-platform">4 Active</span>
-          <span class="stat-label">Supported Platforms</span>
+          <span class="stat-value" id="stat-current-streak">0 🔥</span>
+          <span class="stat-label">Daily Streak</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-active-platform">6 Active</span>
+          <span class="stat-label">Platforms</span>
         </div>
       </div>
 
@@ -182,6 +186,42 @@
               </label>
             </div>
           </div>
+
+          <!-- HackerRank -->
+          <div class="platform-item">
+            <div class="platform-info">
+              <span class="platform-icon hackerrank-icon">HR</span>
+              <div>
+                <span class="platform-name">HackerRank</span>
+                <span class="platform-url">hackerrank.com</span>
+              </div>
+            </div>
+            <div class="platform-action">
+              <span class="badge badge-active">Active</span>
+              <label class="switch">
+                <input type="checkbox" id="toggle-hackerrank" checked>
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Take You Forward -->
+          <div class="platform-item">
+            <div class="platform-info">
+              <span class="platform-icon tuf-icon">TUF</span>
+              <div>
+                <span class="platform-name">Take You Forward</span>
+                <span class="platform-url">takeuforward.org</span>
+              </div>
+            </div>
+            <div class="platform-action">
+              <span class="badge badge-active">Active</span>
+              <label class="switch">
+                <input type="checkbox" id="toggle-tuf" checked>
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -221,7 +261,7 @@
     <!-- Footer -->
     <footer class="app-footer">
       <span>DSA Sync &copy; 2026</span>
-      <a href="https://github.com" target="_blank" class="footer-link">v2.0 Documentation</a>
+      <a href="https://github.com" target="_blank" class="footer-link">v2.1 Documentation</a>
     </footer>
   </div>
 
