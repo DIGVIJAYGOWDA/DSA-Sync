@@ -10,6 +10,19 @@
 
 ---
 
+## ✨ Features
+
+- ⚡ **Automated Background Sync:** Synchronizes accepted solutions automatically without manual copy-pasting.
+- 🌐 **6 Supported Platforms:** GeeksforGeeks, LeetCode, CodeChef, Codeforces, HackerRank, and Take You Forward.
+- 📐 **Universal Platform-Adapter Architecture:** Decoupled platform adapters feeding a single normalized submission pipeline.
+- 📊 **Complexity Analysis:** Automatically estimates Time & Space Complexity ($O(N)$, $O(N^2)$, $O(N \log N)$, $O(1)$).
+- 🔥 **Daily Coding Streak Calculator:** Tracks daily active streak and total solved counts across all platforms.
+- 📝 **Rich README Generation:** Creates structured Markdown documentation with difficulty badges, topics, and problem URLs.
+- 🔄 **Smart Deduplication:** Prevents duplicate commits using local storage hashes & remote GitHub SHA checks.
+- 🔒 **Privacy & Security:** 100% client-side execution. GitHub Personal Access Tokens (PAT) remain local in Chrome storage.
+
+---
+
 ## 🌐 Supported Platforms Matrix
 
 | Platform | Support Status | Adapter Location | Status Details |
@@ -94,6 +107,33 @@ DSA-Solutions/
 ├── Codeforces/
 └── HackerRank/
 ```
+
+---
+
+## 🔑 Installation & GitHub Configuration
+
+### Step 1: Install Extension in Chrome
+1. Navigate to `chrome://extensions/` in Google Chrome.
+2. Enable **Developer mode** toggle in the top-right corner.
+3. Click **Load unpacked** in the top-left corner and select this project directory.
+
+### Step 2: Configure GitHub Personal Access Token (PAT)
+1. Go to GitHub -> **Settings** -> **Developer Settings** -> **Personal Access Tokens**.
+2. Generate a Fine-grained PAT (with `Contents: Read & Write` permission) or Classic Token (with `repo` scope).
+3. Open the **DSA Sync** popup toolbar icon -> **GitHub Auth** tab.
+4. Paste your token, enter `DIGVIJAYGOWDA/DSA-Sync` (or your repository path), and click **Save Connection**.
+
+---
+
+## 🧪 Running Unit Tests
+
+Run the automated test suite locally:
+
+```bash
+npm test
+```
+
+*Executes 17 unit tests verifying URL detection, adapters, complexity estimation, submission normalization, and validators.*
 
 ---
 

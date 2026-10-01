@@ -6,6 +6,7 @@
 const DEFAULT_SETTINGS = {
   githubToken: '',
   githubRepo: '',
+  tufRepo: '', // Dedicated separate repository for Take You Forward / Strivers solutions
   githubBranch: 'main',
   rootFolder: 'DSA-Solutions',
   generateReadme: true,
@@ -104,7 +105,6 @@ class StorageManager {
     const todayStr = new Date().toISOString().split('T')[0];
     const yesterdayStr = new Date(Date.now() - 86400000).toISOString().split('T')[0];
 
-    // Check if user solved today or yesterday to maintain streak
     if (!dailyActivity[todayStr] && !dailyActivity[yesterdayStr]) {
       return 0;
     }
@@ -239,10 +239,8 @@ class StorageManager {
         const stats = result.dsa_sync_stats || {};
         const platformStats = { ...DEFAULT_STATS.platformStats, ...(stats.platformStats || {}) };
 
-        // Increment today's activity count
         dailyActivity[todayStr] = (dailyActivity[todayStr] || 0) + 1;
 
-        // Increment platform specific solved count if not already recorded in hash
         if (!hashes.includes(hash)) {
           hashes.push(hash);
           if (hashes.length > 500) hashes.shift();

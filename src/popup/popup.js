@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnToggleToken = document.getElementById('btn-toggle-token');
   const btnTestToken = document.getElementById('btn-test-token');
   const inputRepoName = document.getElementById('input-repo-name');
+  const inputTufRepo = document.getElementById('input-tuf-repo');
   const inputRepoBranch = document.getElementById('input-repo-branch');
   const btnSaveGithub = document.getElementById('btn-save-github');
 
@@ -104,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
           inputPatToken.value = settings.githubToken;
         }
         inputRepoName.value = settings.githubRepo || '';
+        if (inputTufRepo) inputTufRepo.value = settings.tufRepo || '';
         inputRepoBranch.value = settings.githubBranch || 'main';
         inputRootFolder.value = settings.rootFolder || 'DSA-Solutions';
         checkboxGenerateReadme.checked = settings.generateReadme !== false;
@@ -198,6 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
   btnSaveGithub.addEventListener('click', () => {
     const tokenToSave = realToken || inputPatToken.value.trim();
     const repo = inputRepoName.value.trim();
+    const tufRepo = inputTufRepo ? inputTufRepo.value.trim() : '';
     const branch = inputRepoBranch.value.trim() || 'main';
 
     if (!repo || !repo.includes('/')) {
@@ -207,6 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const settingsToUpdate = {
       githubRepo: repo,
+      tufRepo,
       githubBranch: branch
     };
 

@@ -1,6 +1,7 @@
 /**
  * GitHub REST API Service Module for DSA Sync
  * Accepts Normalized Submission objects and commits code & README files without platform-specific logic.
+ * Supports dedicated repository targeting for Take You Forward (TUF / Strivers Solutions).
  */
 
 import { validateRepoPath } from '../utils/validators.js';
@@ -129,14 +130,15 @@ export class GitHubApi {
 
   /**
    * Core Sync Method: Accepts Normalized Submission Model and commits solution & README
-   * Purely generic algorithm operating strictly on normalized submission fields.
+   * Supports dedicated repository targeting for Take You Forward (TUF / Strivers Solutions).
    * @param {Object} submission Normalized Submission Model
    * @param {Object} [overrideSettings]
    * @returns {Promise<{ success: boolean, status: string, message: string, details?: Object }>}
    */
   async syncSubmission(submission, overrideSettings = null) {
     const title = submission.problemTitle || submission.title || 'Untitled';
-    logger.info(`Starting synchronization for normalized submission: "${title}" (${submission.platform})`);
+    const platformKey = (submission.platform || '').toLowerCase().trim();
+    logger.info(`Starting synchronization for normalized submission: "${title}" (${platformKey})`);
 
     // 1. Basic validation
     if (!submission || !submission.code) {
@@ -153,9 +155,30 @@ export class GitHubApi {
       return { success: false, status: 'error', message: errMsg };
     }
 
-    const repoValid = validateRepoPath(settings.githubRepo);
+    const defaultRepoValid = validateRepoPath(settings.githubRepo);
+    if (!defaultRepoValid.valid) {
+      const errMsg = `Invalid primary GitHub repository configured: ${defaultRepoValid.message}`;
+      logger.error(errMsg);
+      return { success: false, status: 'error', message: errMsg };
+    }
+
+    // Determine target repository (Support separate repository for Take You Forward / Strivers Solutions)
+    let targetRepoStr = settings.githubRepo;
+    if (platformKey === 'takeuforward' || platformKey === 'tuf') {
+      if (settings.tufRepo && settings.tufRepo.trim()) {
+        targetRepoStr = settings.tufRepo.trim();
+        if (!targetRepoStr.includes('/')) {
+          targetRepoStr = `${defaultRepoValid.owner}/${targetRepoStr}`;
+        }
+      } else {
+        // Default dedicated repo for TUF solutions: owner/TUF-Strivers-Solutions
+        targetRepoStr = `${defaultRepoValid.owner}/TUF-Strivers-Solutions`;
+      }
+    }
+
+    const repoValid = validateRepoPath(targetRepoStr);
     if (!repoValid.valid) {
-      const errMsg = `Invalid GitHub repository configured: ${repoValid.message}`;
+      const errMsg = `Invalid target repository configured for ${platformKey}: ${repoValid.message}`;
       logger.error(errMsg);
       return { success: false, status: 'error', message: errMsg };
     }
@@ -179,7 +202,7 @@ export class GitHubApi {
       }
     }
 
-    // 4. File Paths Generation (Generic for all platforms)
+    // 4. File Paths Generation
     const filePath = generateFilePath(submission, rootFolder);
     const readmePath = generateReadmePath(submission, rootFolder);
 
@@ -188,7 +211,7 @@ export class GitHubApi {
     
     if (existingFile.exists && settings.ignoreDuplicates) {
       if (existingFile.content && existingFile.content.trim() === submission.code.trim()) {
-        const msg = `Skipped: Exact solution code for "${title}" already exists on GitHub repo.`;
+        const msg = `Skipped: Exact solution code for "${title}" already exists in ${owner}/${repo}.`;
         logger.info(msg);
         await storage.recordSyncedSubmission(submission);
         await storage.updateStats({
@@ -218,7 +241,7 @@ export class GitHubApi {
     });
 
     if (!codeResult.success) {
-      const errMsg = `Failed to commit solution file: ${codeResult.error}`;
+      const errMsg = `Failed to commit solution to ${owner}/${repo}: ${codeResult.error}`;
       logger.error(errMsg);
       await storage.updateStats({
         lastSyncTime: new Date().toISOString(),
@@ -255,7 +278,7 @@ export class GitHubApi {
       });
     }
 
-    // 8. Record Record & Update Stats
+    // 8. Record Stats & Update Activity
     await storage.recordSyncedSubmission(submission);
     const currentStats = await storage.getStats();
     const newTotal = (currentStats.totalSynced || 0) + 1;
@@ -273,7 +296,7 @@ export class GitHubApi {
       platform: submission.platform,
       language: submission.language,
       difficulty: submission.difficulty,
-      filePath,
+      filePath: `${owner}/${repo}/${filePath}`,
       status: 'success',
       commitUrl: codeResult.commitUrl,
       message: successMsg
@@ -286,6 +309,7 @@ export class GitHubApi {
       status: 'success',
       message: successMsg,
       details: {
+        repo: `${owner}/${repo}`,
         filePath,
         readmePath,
         commitUrl: codeResult.commitUrl

@@ -94,8 +94,12 @@
           </div>
 
           <div id="repo-section" class="repo-section">
-            <label for="input-repo-name">GitHub Repository (owner/repo)</label>
+            <label for="input-repo-name">Primary Repository (owner/repo)</label>
             <input type="text" id="input-repo-name" placeholder="username/dsa-solutions">
+
+            <label for="input-tuf-repo" style="margin-top: 10px;">TUF / Strivers Dedicated Repository</label>
+            <input type="text" id="input-tuf-repo" placeholder="username/TUF-Strivers-Solutions">
+            <p class="field-hint">TUF solutions will sync to this separate repository!</p>
 
             <label for="input-repo-branch" style="margin-top: 10px;">Target Branch</label>
             <input type="text" id="input-repo-branch" placeholder="main" value="main">
