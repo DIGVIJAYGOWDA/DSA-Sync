@@ -44,7 +44,7 @@
       "js": [
         "src/platforms/base-adapter.js",
         "src/platforms/gfg/gfg-adapter.js",
-        "src/content/gfg.js"
+        "src/content/content-script.js"
       ],
       "run_at": "document_end"
     },
@@ -55,7 +55,7 @@
       "js": [
         "src/platforms/base-adapter.js",
         "src/platforms/leetcode/leetcode-adapter.js",
-        "src/content/gfg.js"
+        "src/content/content-script.js"
       ],
       "run_at": "document_end"
     },
@@ -67,7 +67,7 @@
       "js": [
         "src/platforms/base-adapter.js",
         "src/platforms/codechef/codechef-adapter.js",
-        "src/content/gfg.js"
+        "src/content/content-script.js"
       ],
       "run_at": "document_end"
     },
@@ -79,7 +79,7 @@
       "js": [
         "src/platforms/base-adapter.js",
         "src/platforms/codeforces/codeforces-adapter.js",
-        "src/content/gfg.js"
+        "src/content/content-script.js"
       ],
       "run_at": "document_end"
     },
@@ -90,7 +90,7 @@
       "js": [
         "src/platforms/base-adapter.js",
         "src/platforms/hackerrank/hackerrank-adapter.js",
-        "src/content/gfg.js"
+        "src/content/content-script.js"
       ],
       "run_at": "document_end"
     },
@@ -102,7 +102,7 @@
       "js": [
         "src/platforms/base-adapter.js",
         "src/platforms/tuf/tuf-adapter.js",
-        "src/content/gfg.js"
+        "src/content/content-script.js"
       ],
       "run_at": "document_end"
     }
