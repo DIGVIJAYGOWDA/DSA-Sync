@@ -4,4 +4,7 @@ class Solution(object):
         :type num: int
         :rtype: bool
         """
-        for i in range(1,)
+        count=0
+        for i in range(1,n+1):
+            if i%n==0:
+                count+=1
