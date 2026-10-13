@@ -8,13 +8,13 @@
 
 | Metric | Detail |
 | :--- | :--- |
-| **Platform** | [LeetCode](https://leetcode.com/problems/perfect-number) |
-| **Problem Link** | [View Problem on LeetCode](https://leetcode.com/problems/perfect-number) |
+| **Platform** | [LeetCode](https://leetcode.com/problems/perfect-number/) |
+| **Problem Link** | [View Problem on LeetCode](https://leetcode.com/problems/perfect-number/) |
 | **Language** | `Python` |
 | **Estimated Time Complexity** | `O(N)` |
 | **Estimated Space Complexity** | `O(1)` |
 | **Topics / Tags** | `Math` |
-| **Synchronized At** | `Tue, 13 Oct 2026 13:31:22 GMT` |
+| **Synchronized At** | `Tue, 13 Oct 2026 13:32:36 GMT` |
 
 ---
 
