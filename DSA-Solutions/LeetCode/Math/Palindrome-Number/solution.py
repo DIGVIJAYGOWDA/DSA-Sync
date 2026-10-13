@@ -5,4 +5,10 @@ class Solution(object):
         sum=0
         while x>0:
             sum=x%10
-            rev=rev
+            rev=rev*10+sum
+            x=x//10
+
+        if rev==original:
+            return True
+        else:
+            return False
