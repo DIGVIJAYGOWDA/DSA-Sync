@@ -14,7 +14,7 @@
 | **Estimated Time Complexity** | `O(N)` |
 | **Estimated Space Complexity** | `O(1)` |
 | **Topics / Tags** | `Array`, `Math`, `Enumeration`, `Number Theory`, `Primality Test`, `Sieve Theory`, `Prime Number Sieve` |
-| **Synchronized At** | `Tue, 13 Oct 2026 14:09:04 GMT` |
+| **Synchronized At** | `Tue, 13 Oct 2026 14:10:05 GMT` |
 
 ---
 
