@@ -15,4 +15,4 @@ class Solution(object):
         if divisors==2:
             count+=1
         
-return count
+        return count
