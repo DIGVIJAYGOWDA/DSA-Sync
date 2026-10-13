@@ -12,5 +12,5 @@ class Solution(object):
         count=0
         if divisors==2:
             count+=1
-        
+            
         return count
