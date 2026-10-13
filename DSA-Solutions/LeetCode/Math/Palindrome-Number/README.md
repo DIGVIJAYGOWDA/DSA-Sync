@@ -8,13 +8,13 @@
 
 | Metric | Detail |
 | :--- | :--- |
-| **Platform** | [LeetCode](https://leetcode.com/problems/palindrome-number/) |
-| **Problem Link** | [View Problem on LeetCode](https://leetcode.com/problems/palindrome-number/) |
+| **Platform** | [LeetCode](https://leetcode.com/problems/palindrome-number) |
+| **Problem Link** | [View Problem on LeetCode](https://leetcode.com/problems/palindrome-number) |
 | **Language** | `Python` |
 | **Estimated Time Complexity** | `O(N)` |
 | **Estimated Space Complexity** | `O(1)` |
 | **Topics / Tags** | `Math` |
-| **Synchronized At** | `Tue, 13 Oct 2026 11:16:42 GMT` |
+| **Synchronized At** | `Tue, 13 Oct 2026 11:17:42 GMT` |
 
 ---
 
