@@ -14,7 +14,7 @@
 | **Estimated Time Complexity** | `O(N)` |
 | **Estimated Space Complexity** | `O(1)` |
 | **Topics / Tags** | `Math` |
-| **Synchronized At** | `Sun, 11 Oct 2026 13:03:25 GMT` |
+| **Synchronized At** | `Tue, 13 Oct 2026 13:14:41 GMT` |
 
 ---
 
