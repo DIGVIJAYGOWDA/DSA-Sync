@@ -8,13 +8,13 @@
 
 | Metric | Detail |
 | :--- | :--- |
-| **Platform** | [LeetCode](https://leetcode.com/problems/count-primes/) |
-| **Problem Link** | [View Problem on LeetCode](https://leetcode.com/problems/count-primes/) |
+| **Platform** | [LeetCode](https://leetcode.com/problems/count-primes) |
+| **Problem Link** | [View Problem on LeetCode](https://leetcode.com/problems/count-primes) |
 | **Language** | `Python` |
 | **Estimated Time Complexity** | `O(N)` |
 | **Estimated Space Complexity** | `O(1)` |
 | **Topics / Tags** | `Array`, `Math`, `Enumeration`, `Number Theory`, `Primality Test`, `Sieve Theory`, `Prime Number Sieve` |
-| **Synchronized At** | `Tue, 13 Oct 2026 15:33:24 GMT` |
+| **Synchronized At** | `Tue, 13 Oct 2026 15:34:26 GMT` |
 
 ---
 
