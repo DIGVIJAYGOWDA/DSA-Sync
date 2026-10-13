@@ -4,3 +4,4 @@ class Solution(object):
         :type num: int
         :rtype: bool
         """
+        for i in
