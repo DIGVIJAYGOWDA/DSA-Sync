@@ -14,7 +14,7 @@
 | **Estimated Time Complexity** | `O(N)` |
 | **Estimated Space Complexity** | `O(1)` |
 | **Topics / Tags** | `Math`, `Greedy` |
-| **Synchronized At** | `Wed, 14 Oct 2026 01:00:31 GMT` |
+| **Synchronized At** | `Wed, 14 Oct 2026 01:29:42 GMT` |
 
 ---
 
