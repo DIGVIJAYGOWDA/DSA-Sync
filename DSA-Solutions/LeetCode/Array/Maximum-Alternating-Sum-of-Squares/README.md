@@ -14,7 +14,7 @@
 | **Estimated Time Complexity** | `O(N log N)` |
 | **Estimated Space Complexity** | `O(N)` |
 | **Topics / Tags** | `Array`, `Greedy`, `Sorting` |
-| **Synchronized At** | `Wed, 14 Oct 2026 00:50:59 GMT` |
+| **Synchronized At** | `Wed, 14 Oct 2026 00:52:01 GMT` |
 
 ---
 
