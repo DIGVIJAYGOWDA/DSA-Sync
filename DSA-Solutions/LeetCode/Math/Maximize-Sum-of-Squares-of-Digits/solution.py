@@ -8,3 +8,5 @@ class Solution(object):
         result=''
         if sum>9*num or sum==0:
             return ''
+        
+        for i in range(1,num+1):
