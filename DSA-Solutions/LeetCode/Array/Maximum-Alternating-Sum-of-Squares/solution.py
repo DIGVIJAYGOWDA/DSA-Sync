@@ -8,4 +8,4 @@ class Solution(object):
         for i in range(n):
             nums[i]*=nums[i]
         nums.sort()
-        return
+        return -sum(nums[:n//2]+sum(num[:n//2]))
