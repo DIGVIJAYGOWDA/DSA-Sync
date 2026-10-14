@@ -11,10 +11,10 @@
 | **Platform** | [LeetCode](https://leetcode.com/problems/maximize-sum-of-squares-of-digits/) |
 | **Problem Link** | [View Problem on LeetCode](https://leetcode.com/problems/maximize-sum-of-squares-of-digits/) |
 | **Language** | `Python` |
-| **Estimated Time Complexity** | `O(N log N)` |
+| **Estimated Time Complexity** | `O(N)` |
 | **Estimated Space Complexity** | `O(1)` |
 | **Topics / Tags** | `Math`, `Greedy` |
-| **Synchronized At** | `Wed, 14 Oct 2026 00:59:24 GMT` |
+| **Synchronized At** | `Wed, 14 Oct 2026 01:00:31 GMT` |
 
 ---
 
