@@ -6,5 +6,5 @@ class Solution(object):
         :rtype: str
         """
         result=''
-        if sum>=9*num or sum==0:
+        if sum>9*num or sum==0:
             return ''
