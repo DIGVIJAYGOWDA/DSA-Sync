@@ -11,5 +11,4 @@ class Solution(object):
         
         for i in range(1,num+1):
             if sum>=9:
-                result=9
-                sum-=9
+                result+=
