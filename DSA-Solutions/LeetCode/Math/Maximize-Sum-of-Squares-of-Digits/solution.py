@@ -11,4 +11,12 @@ class Solution(object):
         
         for i in range(1,num+1):
             if sum>=9:
-                result+=
+                result+='9'
+                sum-=9
+            elif sum>0:
+                result+=str(sum)
+                sum=0
+            else:
+                result+='0'
+        
+        return result
